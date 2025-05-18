@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polar Games Corporation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Orbitron:wght@400;700&display=swap');
+        
+        :root {
+            --primary: #3b82f6;
+            --secondary: #8b5cf6;
+            --accent: #ec4899;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .title-font {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+        }
+        
+        .frosted-glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .game-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px) scale(1.02) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.4);
+            border-color: rgba(14, 165, 233, 0.5);
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .btn-hover-effect {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn-hover-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+        
+        .btn-hover-effect:hover::before {
+            left: 100%;
+        }
+        
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        
+        .text-stroke {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+            color: transparent;
+        }
+        
+        .gradient-border {
+            position: relative;
+        }
+        
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: 3px solid var(--primary);
+            white-space: nowrap;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--primary) }
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 30px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-30px);}
+            60% {transform: translateY(-15px);}
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--primary), 0 0 20px var(--primary), 0 0 25px var(--primary), 0 0 30px var(--primary), 0 0 35px var(--primary);
+        }
+        
+        .glow-box {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        
+        .rotate-infinite {
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Animated Background Particles -->
+    <div id="particles-js"></div>
+    
+    <!-- Navigation -->
+    <nav class="frosted-glass fixed w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <span class="title-font text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-purple-500 animate__animated animate__fadeInDown">
+                            <i class="fas fa-snowflake mr-2"></i> POLAR GAMES
+                        </span>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="#" class="nav-link text-sky-400 hover:text-white px-3 py-2 rounded-md text-sm font-medium relative group">
+                                Главная
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-400 transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                            <a href="#games" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium relative group">
+                                Игры
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-400 transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                            <a href="#about" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium relative group">
+                                О нас
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-400 transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                            <a href="#careers" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium relative group">
+                                Карьера
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-400 transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                            <a href="#contact" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium relative group">
+                                Контакты
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-400 transition-all duration-300 group-hover:w-full"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6">
+                        <button class="btn-hover-effect bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-700 hover:to-purple-700 text-white px-6 py-2 rounded-md text-sm font-medium transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                            <i class="fas fa-user-astronaut mr-2"></i> Войти
+                        </button>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none transition duration-300">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 bg-opacity-95">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-slate-800">Главная</a>
+                <a href="#games" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-slate-800 transition duration-300">Игры</a>
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-slate-800 transition duration-300">О нас</a>
+                <a href="#careers" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-slate-800 transition duration-300">Карьера</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-slate-800 transition duration-300">Контакты</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-slate-800 transition duration-300">Войти</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-40 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center relative z-10">
+                <div class="animate__animated animate__fadeInDown">
+                    <span class="text-lg md:text-xl font-semibold text-sky-400 mb-4 inline-block">
+                        <span class="typewriter">Добро пожаловать в будущее игр</span>
+                    </span>
+                </div>
+                
+                <h1 class="text-5xl md:text-8xl font-extrabold tracking-tight hero-gradient title-font mb-6 animate__animated animate__fadeIn animate__delay-1s">
+                    POLAR GAMES
+                </h1>
+                
+                <div class="animate__animated animate__fadeIn animate__delay-1-5s">
+                    <p class="max-w-3xl mx-auto text-xl md:text-2xl text-gray-300 mb-12 leading-relaxed">
+                        Официальный сайт легендарной романовской компании по разработке инновационных игровых миров
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                        <button class="btn-hover-effect bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl font-bold transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl animate__animated animate__fadeInUp animate__delay-2s">
+                            <i class="fas fa-play mr-3"></i> Смотреть трейлер
+                        </button>
+                        <button class="btn-hover-effect bg-transparent border-2 border-sky-400 text-sky-400 hover:bg-sky-400 hover:text-white px-8 py-4 rounded-xl font-bold transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl animate__animated animate__fadeInUp animate__delay-2-5s">
+                            <i class="fas fa-download mr-3"></i> Скачать игры
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+            <div class="particle absolute top-20 left-10 w-16 h-16 rounded-full bg-sky-500 opacity-20 blur-xl animate-float"></div>
+            <div class="particle absolute top-1/3 right-20 w-24 h-24 rounded-full bg-purple-500 opacity-20 blur-xl animate-float delay-1"></div>
+            <div class="particle absolute bottom-20 left-1/4 w-20 h-20 rounded-full bg-pink-500 opacity-20 blur-xl animate-float delay-2"></div>
+            <div class="particle absolute top-1/4 left-1/3 w-32 h-32 rounded-full bg-blue-500 opacity-10 blur-xl animate-float delay-3"></div>
+            <div class="particle absolute bottom-1/3 right-1/4 w-28 h-28 rounded-full bg-indigo-500 opacity-15 blur-xl animate-float delay-4"></div>
+        </div>
+        
+        <!-- Scroll down indicator -->
+        <a href="#games" class="scroll-down animate__animated animate__fadeIn animate__delay-3s">
+            <i class="fas fa-chevron-down"></i>
+        </a>
+        
+        <!-- Floating game characters -->
+        
+    </section>
+
+    <!-- Games Section -->
+    <section id="games" class="py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden">
+        <!-- Animated background elements -->
+        <div class="absolute -left-40 -top-40 w-80 h-80 bg-blue-900 rounded-full filter blur-3xl opacity-10 z-0"></div>
+        <div class="absolute -right-40 -bottom-40 w-80 h-80 bg-purple-900 rounded-full filter blur-3xl opacity-10 z-0"></div>
+        
+        <div class="text-center mb-20 relative z-10">
+            <h2 class="text-4xl md:text-6xl font-bold text-white title-font glow-text mb-6 animate__animated">
+                <span class="text-stroke inline-block mr-2">ИГРЫ</span>
+                <span class="hero-gradient">Наши проекты</span>
+            </h2>
+            <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-purple-500 mx-auto mb-6"></div>
+            <p class="max-w-2xl mx-auto text-gray-400 text-lg">
+                Погрузитесь в захватывающие миры, созданные нашей командой
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10 relative z-10">
+            <!-- Game 1 -->
+            <div class="game-card rounded-2xl p-8 relative overflow-hidden h-full transform transition-all duration-500 hover:z-10">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-sky-500 rounded-full opacity-10 rotate-infinite"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-500 rounded-full opacity-10 rotate-infinite" style="animation-direction: reverse;"></div>
+                
+                <div class="flex items-center mb-6">
+                    <div class="w-20 h-20 bg-sky-900 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                        <i class="fas fa-crown text-3xl text-sky-400"></i>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold text-white">Kingline 1</h3>
+                </div>
+                <p class="text-gray-300 mb-8 leading-relaxed">
+                    Первая игра, замёнённая играми Romalex, которые длились от 1 части до 19-ой части игр. Начало легендарной саги.
+                </p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-sky-400 font-medium">
+                        <i class="fas fa-calendar-alt mr-1"></i> 2018
+                    </span>
+                    <button class="btn-hover-effect text-white bg-sky-600 hover:bg-sky-700 px-5 py-2 rounded-lg text-sm transition-all duration-300 transform hover:scale-105 shadow-md">
+                        Подробнее <i class="fas fa-arrow-right ml-2 animate-pulse"></i>
+                    </button>
+                </div>
+                
+                <!-- Floating game screenshot -->
+                <div class="absolute -right-20 -bottom-20 w-60 h-60 opacity-20 hover:opacity-30 transition duration-500">
+                </div>
+            </div>
+            
+            <!-- Game 2 -->
+            <div class="game-card rounded-2xl p-8 relative overflow-hidden h-full transform transition-all duration-500 hover:z-10">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-purple-500 rounded-full opacity-10 rotate-infinite"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-indigo-500 rounded-full opacity-10 rotate-infinite" style="animation-direction: reverse;"></div>
+                
+                <div class="flex items-center mb-6">
+                    <div class="w-20 h-20 bg-purple-900 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                        <i class="fas fa-radiation-alt text-3xl text-purple-400"></i>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold text-white">Kingline 2</h3>
+                </div>
+                <p class="text-gray-300 mb-8 leading-relaxed">
+                    Вторая игра, чистое продолжение 1 части, после того как в первой части, Лукинс отправился в Припять. Новые локации и сюжетные повороты.
+                </p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-purple-400 font-medium">
+                        <i class="fas fa-calendar-alt mr-1"></i> 2020
+                    </span>
+                    <button class="btn-hover-effect text-white bg-purple-600 hover:bg-purple-700 px-5 py-2 rounded-lg text-sm transition-all duration-300 transform hover:scale-105 shadow-md">
+                        Подробнее <i class="fas fa-arrow-right ml-2 animate-pulse"></i>
+                    </button>
+                </div>
+                
+                <!-- Floating game screenshot -->
+                <div class="absolute -right-20 -bottom-20 w-60 h-60 opacity-20 hover:opacity-30 transition duration-500">
+                </div>
+            </div>
+            
+            <!-- Game 3 -->
+            <div class="game-card rounded-2xl p-8 relative overflow-hidden h-full transform transition-all duration-500 hover:z-10 pulse">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-pink-500 rounded-full opacity-10 rotate-infinite"></div>
+                <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-rose-500 rounded-full opacity-10 rotate-infinite" style="animation-direction: reverse;"></div>
+                
+                <div class="flex items-center mb-6">
+                    <div class="w-20 h-20 bg-pink-900 rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                        <i class="fas fa-tools text-3xl text-pink-400"></i>
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-bold text-white">Kingline 3</h3>
+                </div>
+                <p class="text-gray-300 mb-8 leading-relaxed">
+                    Третья игра, которая к сожалению на данный момент разрабатывается на Polar Engine! Готовьтесь к эпическому завершению трилогии.
+                </p>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-pink-400 font-medium">
+                        <i class="fas fa-hourglass-half mr-1"></i> В разработке
+                    </span>
+                    <button class="btn-hover-effect text-white bg-pink-600 hover:bg-pink-700 px-5 py-2 rounded-lg text-sm transition-all duration-300 transform hover:scale-105 shadow-md">
+                        Узнать больше <i class="fas fa-arrow-right ml-2 animate-pulse"></i>
+                    </button>
+                </div>
+                
+                <!-- Floating game screenshot -->
+                <div class="absolute -right-20 -bottom-20 w-60 h-60 opacity-20 hover:opacity-30 transition duration-500">
+                </div>
+            </div>
+        </div>
+        
+        <!-- View all games button -->
+        <div class="text-center mt-16 relative z-10">
+            <button class="btn-hover-effect gradient-border bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-xl font-bold transition-all duration-500 transform hover:scale-105 shadow-lg">
+                <i class="fas fa-gamepad mr-3"></i> Все наши игры
+            </button>
+        </div>
+    </section>
+
+    <!-- Engine Section -->
+    <section id="about" class="py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+        <!-- Animated background grid -->
+        <div class="absolute inset-0 overflow-hidden opacity-10">
+            <div class="grid grid-cols-12 grid-rows-12 h-full w-full">
+                <div class="col-span-1 row-span-1 border border-gray-800 animate-pulse" style="animation-delay: 0.1s;"></div>
+                <div class="col-span-1 row-span-1 border border-gray-800 animate-pulse" style="animation-delay: 0.2s;"></div>
+                <!-- Repeat for grid pattern -->
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto relative">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-16 md:mb-0 md:pr-12 relative z-10">
+                    <h2 class="text-3xl md:text-5xl font-bold text-white title-font mb-8">
+                        <span class="text-stroke inline-block mr-3">TECH</span>
+                        <span class="hero-gradient">Polar Engine</span>
+                    </h2>
+                    
+                    <p class="text-gray-300 mb-8 leading-relaxed text-lg">
+                        Наш собственный игровой движок, разработанный специально для создания захватывающих игровых миров. 
+                        Polar Engine предлагает беспрецедентную производительность и гибкость для разработчиков.
+                    </p>
+                    
+                    <div class="space-y-5 mb-10">
+                        <div class="flex items-center bg-slate-800 bg-opacity-50 p-4 rounded-xl border border-slate-700 hover:border-sky-500 transition duration-300">
+                            <div class="w-12 h-12 bg-sky-900 rounded-lg flex items-center justify-center mr-4 shadow-lg">
+                                <i class="fas fa-bolt text-xl text-sky-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-white">Высокая производительность</h4>
+                                <p class="text-gray-400 text-sm">Оптимизированный рендеринг и физика</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center bg-slate-800 bg-opacity-50 p-4 rounded-xl border border-slate-700 hover:border-purple-500 transition duration-300">
+                            <div class="w-12 h-12 bg-purple-900 rounded-lg flex items-center justify-center mr-4 shadow-lg">
+                                <i class="fas fa-paint-brush text-xl text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-white">Продвинутая графика</h4>
+                                <p class="text-gray-400 text-sm">Реалистичное освещение и материалы</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center bg-slate-800 bg-opacity-50 p-4 rounded-xl border border-slate-700 hover:border-pink-500 transition duration-300">
+                            <div class="w-12 h-12 bg-pink-900 rounded-lg flex items-center justify-center mr-4 shadow-lg">
+                                <i class="fas fa-code text-xl text-pink-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-white">Гибкость разработки</h4>
+                                <p class="text-gray-400 text-sm">Модульная архитектура и инструменты</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-hover-effect bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-500 transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-book mr-2"></i> Документация
+                    </button>
+                </div>
+                
+                <div class="md:w-1/2 relative z-10">
+                    <div class="frosted-glass rounded-2xl p-1 gradient-border">
+                        <div class="aspect-w-16 aspect-h-9 bg-slate-800 rounded-xl overflow-hidden relative">
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <i class="fas fa-gamepad text-8xl text-sky-400 opacity-30"></i>
+                            </div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6">
+                                <h3 class="text-xl font-bold text-white">Polar Engine 2.3.5</h3>
+                                <div class="flex justify-between mt-2">
+                                    <span class="text-gray-400 text-sm"><i class="fas fa-cube mr-1"></i> Версия 2.3.5</span>
+                                    <span class="text-gray-400 text-sm"><i class="fas fa-users mr-1"></i> 150+ разработчиков</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating tech elements -->
+                    <div class="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-blue-500 opacity-10 blur-xl animate-float"></div>
+                    <div class="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-purple-500 opacity-10 blur-xl animate-float delay-2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating binary code animation -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="binary-code absolute top-10 left-10 text-green-400 opacity-10 font-mono text-sm">1010101</div>
+            <div class="binary-code absolute top-1/4 right-20 text-green-400 opacity-10 font-mono text-sm">0101010</div>
+            <div class="binary-code absolute bottom-1/3 left-1/4 text-green-400 opacity-10 font-mono text-sm">1100110</div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="careers" class="py-28 px-4 sm:px-6 lg:px-8 bg-slate-900 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 relative z-10">
+                <h2 class="text-4xl md:text-6xl font-bold text-white title-font glow-text mb-6">
+                    <span class="text-stroke inline-block mr-2">КОМАНДА</span>
+                    <span class="hero-gradient">Наши создатели</span>
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-sky-500 to-purple-500 mx-auto mb-6"></div>
+                <p class="max-w-2xl mx-auto text-gray-400 text-lg">
+                    Талантливые разработчики, стоящие за нашими легендарными играми
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+                <!-- Team Member 1 -->
+                <div class="team-card bg-slate-800 rounded-2xl p-6 text-center transition-all duration-500 transform hover:scale-105 hover:shadow-xl hover:border hover:border-sky-500">
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 p-1">
+                        <div class="w-full h-full rounded-full bg-slate-800 overflow-hidden">
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Роман Егоров</h3>
+                    <p class="text-sky-400 text-sm font-medium mb-4">Главный разработчик</p>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Создатель Polar Engine и ведущий программист всех проектов
+                    </p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="https://www.vk.com/gruban_lanpupkun" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-sky-600 text-white flex items-center justify-center transition duration-300">
+                            <i class="fab fa-vk text-sm"></i>
+                        </a>
+                        <a href="https://t.me/roman_egoroff" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-blue-600 text-white flex items-center justify-center transition duration-300">
+                            <i class="fab fa-telegram text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Team Member 2 -->
+                <div class="team-card bg-slate-800 rounded-2xl p-6 text-center transition-all duration-500 transform hover:scale-105 hover:shadow-xl hover:border hover:border-purple-500">
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 p-1">
+                        <div class="w-full h-full rounded-full bg-slate-800 overflow-hidden">
+                            <img src="https://sun9-43.userapi.com/impg/c627818/v627818340/484b7/F_OFfDjs9h4.jpg?size=2560x1707&quality=96&sign=a00819f20c03cbba2b2d7b2302fe375e&type=album" alt="Alexsander Egorov" class="w-full h-full rounded-full bg-slate-800 overflow-hidden"></img>
+                           
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Александр Егоров</h3>
+                    <p class="text-purple-400 text-sm font-medium mb-4">Программист и создатель сюжета</p>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Главный дизайнер игровых миров и механик в серии Kingline
+                    </p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="https://t.me/aegorov" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-sky-600 text-white flex items-center justify-center transition duration-300">
+                            <i class="fab fa-vk text-sm"></i>
+                        </a>
+                        <a href="https://vk.com/id91937340" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-blue-600 text-white flex items-center justify-center transition duration-300">
+                            <i class="fab fa-telegram text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Team Member 3 -->
+                <div class="team-card bg-slate-800 rounded-2xl p-6 text-center transition-all duration-500 transform hover:scale-105 hover:shadow-xl hover:border hover:border-pink-500">
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-pink-500 to-rose-600 p-1">
+                        <div class="w-full h-full rounded-full bg-slate-800 overflow-hidden">
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Елёпин Оросин</h3>
+                    <p class="text-pink-400 text-sm font-medium mb-4">Арт-директор</p>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Создатель уникального визуального стиля всех наших проектов
+                    </p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-sky-600 text-white flex items-center justify-center transition duration-300">
+                            <i class="fab fa-vk text-sm"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-blue-600 text-white flex items-center justify-center transition duration-300">
+                            <i class="fab fa-telegram text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Team Member 4 -->
+                <div class="team-card bg-slate-800 rounded-2xl p-6 text-center transition-all duration-500 transform hover:scale-105 hover:shadow-xl hover:border hover:border-indigo-500">
+                    <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 p-1">
+                        <div class="w-full h-full rounded-full bg-slate-800 overflow-hidden">
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Грубан Виндин</h3>
+                    <p class="text-indigo-400 text-sm font-medium mb-4">Композитор</p>
+                    <p class="text-gray-400 text-sm mb-4">
+                        Автор эпических саундтреков, которые стали визитной карточкой Kingline
+                    </p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-sky-600 text-white flex items-center justify-center transition duration-300">
+                            <i class="fab fa-vk text-sm"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-blue-600 text-white flex items-center justify-center transition duration-300">
+                            <i class="fab fa-telegram text-sm"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-slate-700 hover:bg-indigo-600 text-white flex items-center justify-center transition duration-300">
+                            <i class="fab fa-discord text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Join team CTA -->
+            <div class="text-center mt-20 relative z-10">
+                <h3 class="text-2xl md:text-4xl font-bold text-white title-font mb-6">
+                    Хотите присоединиться к нашей команде?
+                </h3>
+                <button class="btn-hover-effect bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold transition-all duration-500 transform hover:scale-105 shadow-lg">
+                    <i class="fas fa-user-astronaut mr-3"></i> Вакансии
+                </button>
+            </div>
+        </div>
+        
+        <!-- Floating particles -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/4 left-1/5 w-6 h-6 rounded-full bg-sky-500 opacity-20 animate-float"></div>
+            <div class="absolute top-1/3 right-1/4 w-8 h-8 rounded-full bg-purple-500 opacity-20 animate-float delay-1"></div>
+            <div class="absolute bottom-1/5 left-1/3 w-10 h-10 rounded-full bg-pink-500 opacity-20 animate-float delay-2"></div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section id="contact" class="py-28 px-4 sm:px-6 lg:px-8 parallax-bg relative overflow-hidden">
+        <div class="absolute inset-0 bg-slate-900 bg-opacity-90"></div>
+        
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h2 class="text-3xl md:text-5xl font-bold text-white title-font mb-6 neon-text">
+                Будьте в курсе
+            </h2>
+            <p class="text-gray-300 mb-8 max-w-2xl mx-auto text-lg">
+                Подпишитесь на нашу рассылку, чтобы получать последние новости о наших играх, эксклюзивные материалы и специальные предложения.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center max-w-md mx-auto">
+                <div class="relative flex-grow mb-4 sm:mb-0 sm:mr-4">
+                    <input type="email" placeholder="Ваш email" class="w-full px-5 py-4 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:ring-2 focus:ring-sky-500 transition duration-300">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <i class="fas fa-envelope text-gray-500"></i>
+                    </div>
+                </div>
+                <button class="btn-hover-effect bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white px-8 py-4 rounded-xl font-bold transition-all duration-500 transform hover:scale-105 shadow-lg">
+                    Подписаться <i class="fas fa-paper-plane ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="mt-12">
+                <h3 class="text-xl font-semibold text-white mb-6">Мы в социальных сетях</h3>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="social-icon w-12 h-12 rounded-full bg-slate-800 hover:bg-sky-600 text-white flex items-center justify-center transition duration-300 transform hover:scale-110 shadow-lg">
+                        <i class="fab fa-vk text-xl"></i>
+                    </a>
+                    <a href="#" class="social-icon w-12 h-12 rounded-full bg-slate-800 hover:bg-blue-500 text-white flex items-center justify-center transition duration-300 transform hover:scale-110 shadow-lg">
+                        <i class="fab fa-telegram text-xl"></i>
+                    </a>
+                    <a href="#" class="social-icon w-12 h-12 rounded-full bg-slate-800 hover:bg-red-600 text-white flex items-center justify-center transition duration-300 transform hover:scale-110 shadow-lg">
+                        <i class="fab fa-youtube text-xl"></i>
+                    </a>
+                    <a href="#" class="social-icon w-12 h-12 rounded-full bg-slate-800 hover:bg-indigo-600 text-white flex items-center justify-center transition duration-300 transform hover:scale-110 shadow-lg">
+                        <i class="fab fa-discord text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating contact elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute top-20 left-20 w-16 h-16 rounded-full bg-sky-500 opacity-10 blur-xl animate-float"></div>
+            <div class="absolute bottom-20 right-20 w-20 h-20 rounded-full bg-purple-500 opacity-10 blur-xl animate-float delay-2"></div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <div>
+                    <h3 class="text-white text-xl font-bold mb-6 title-font flex items-center">
+                        <i class="fas fa-snowflake mr-3 text-sky-400"></i> POLAR GAMES
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-6">
+                        Лидер в создании инновационных игровых миров с 2015 года.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                            <i class="fab fa-vk"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300 transform hover:scale-110">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-white text-lg font-bold mb-4">Игры</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-sky-400 mr-2"></i> Kingline 1
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-sky-400 mr-2"></i> Kingline 2
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-sky-400 mr-2"></i> Kingline 3
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-sky-400 mr-2"></i> Все игры
+                        </a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white text-lg font-bold mb-4">Компания</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-purple-400 mr-2"></i> О нас
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-purple-400 mr-2"></i> Карьера
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-purple-400 mr-2"></i> Новости
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-purple-400 mr-2"></i> Контакты
+                        </a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-white text-lg font-bold mb-4">Поддержка</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-pink-400 mr-2"></i> FAQ
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-pink-400 mr-2"></i> Форум
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-pink-400 mr-2"></i> Техподдержка
+                        </a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white text-sm transition duration-300 flex items-center">
+                            <i class="fas fa-chevron-right text-xs text-pink-400 mr-2"></i> Политика конфиденциальности
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">
+                    © 2025 Polar Games Corporation. Все права защищены.
+                </p>
+                <div class="flex flex-wrap justify-center space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-white text-sm transition duration-300">Условия использования</a>
+                    <a href="#" class="text-gray-500 hover:text-white text-sm transition duration-300">Политика конфиденциальности</a>
+                    <a href="#" class="text-gray-500 hover:text-white text-sm transition duration-300">Настройки cookies</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Back to top button -->
+        <a href="#" id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 bg-slate-800 bg-opacity-80 hover:bg-sky-600 text-white rounded-full flex items-center justify-center transition duration-300 transform hover:scale-110 shadow-lg z-50 hidden">
+            <i class="fas fa-arrow-up"></i>
+        </a>
+        
+        <!-- Floating footer elements -->
+        <div class="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-sky-900 to-transparent opacity-10"></div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            this.querySelector('i').classList.toggle('fa-bars');
+            this.querySelector('i').classList.toggle('fa-times');
+        });
+
+        // Back to top button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('back-to-top');
+            if (window.scrollY > 300) {
+                backToTop.classList.remove('hidden');
+            } else {
+                backToTop.classList.add('hidden');
+            }
+            
+            // Navbar shadow
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 10) {
+                nav.classList.add('shadow-xl');
+                nav.style.backgroundColor = 'rgba(15, 23, 42, 0.95)';
+            } else {
+                nav.classList.remove('shadow-xl');
+                nav.style.backgroundColor = 'rgba(15, 23, 42, 0.7)';
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#') return;
+                
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        document.getElementById('mobile-menu-button').querySelector('i').classList.remove('fa-times');
+                        document.getElementById('mobile-menu-button').querySelector('i').classList.add('fa-bars');
+                    }
+                }
+            });
+        });
+
+        // GSAP animations
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Animate elements on scroll
+        gsap.utils.toArray('.game-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                delay: i * 0.1
+            });
+        });
+        
+        gsap.utils.toArray('.team-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 80%",
+                    toggleActions: "play none none none"
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                delay: i * 0.1
+            });
+        });
+        
+        // Animate navigation links on page load
+        gsap.from('.nav-link', {
+            duration: 0.5,
+            y: -20,
+            opacity: 0,
+            stagger: 0.1,
+            delay: 0.5
+        });
+        
+        // Floating particles animation
+        function createParticles() {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'particles-container';
+            document.body.appendChild(particlesContainer);
+            
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random properties
+                const size = Math.random() * 5 + 2;
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 10 + 10;
+                const color = `hsl(${Math.random() * 60 + 200}, 70%, 60%)`;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}px`;
+                particle.style.top = `${posY}px`;
+                particle.style.backgroundColor = color;
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                
+                particlesContainer.appendChild(particle);
+                
+                // Animate particle
+                animateParticle(particle, duration, delay);
+            }
+        }
+        
+        function animateParticle(particle, duration, delay) {
+            const startX = parseFloat(particle.style.left);
+            const startY = parseFloat(particle.style.top);
+            
+            const tl = gsap.timeline({repeat: -1, delay: delay});
+            
+            tl.to(particle, {
+                x: startX + (Math.random() * 200 - 100),
+                y: startY + (Math.random() * 200 - 100),
+                duration: duration,
+                ease: "sine.inOut"
+            })
+            .to(particle, {
+                x: startX,
+                y: startY,
+                duration: duration,
+                ease: "sine.inOut"
+            });
+        }
+        
+        // Create particles after page load
+        window.addEventListener('load', createParticles);
+        
+        // Typewriter effect
+        const typewriterElement = document.querySelector('.typewriter');
+        if (typewriterElement) {
+            const text = typewriterElement.textContent;
+            typewriterElement.textContent = '';
+            
+            let i = 0;
+            const typing = setInterval(() => {
+                if (i < text.length) {
+                    typewriterElement.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typing);
+                    typewriterElement.style.borderRight = 'none';
+                }
+            }, 100);
+        }
+    </script>
+</body>
+</html>
